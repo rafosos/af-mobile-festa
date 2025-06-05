@@ -1,8 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.AFMobileFesta" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/azul_background</item>
     </style>
 
     <style name="Theme.AFMobileFesta" parent="Base.Theme.AFMobileFesta" />

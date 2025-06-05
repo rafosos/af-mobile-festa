@@ -34,7 +34,68 @@
                 app:layout_constraintTop_toBottomOf="@+id/fotoHeader"
                 android:text="@string/titulo"
                 android:textSize="35sp"
+                android:textFontWeight="800"
                 android:layout_gravity="center"/>
+
+            <LinearLayout
+                android:id="@+id/container_search_total"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/container_search_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <FrameLayout
+                        android:background="@drawable/rounded_white_background"
+                        android:layout_margin="10dp"
+                        android:padding="10dp"
+                        android:layout_weight="9"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/search_bar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/hint_pesquisa"/>
+                    </FrameLayout>
+
+                    <ImageButton
+                        android:id="@+id/btn_add"
+                        android:background="@drawable/rounded_green_background"
+                        android:layout_gravity="center"
+                        android:src="@drawable/add"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/total"
+                    android:textStyle="italic"
+                    android:textAlignment="textEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/container_stats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/container_convidados"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
     </ScrollView>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "918150997444",
+    "project_id": "af-mobile-festa",
+    "storage_bucket": "af-mobile-festa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918150997444:android:7dfdef9fd71a032a30f091",
+        "android_client_info": {
+          "package_name": "com.example.afmobilefesta"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOTVzvg0wnJSeYfI9iyc_5V4ecmVJOy1U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

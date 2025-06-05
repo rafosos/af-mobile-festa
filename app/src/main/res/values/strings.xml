@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Festa Vó AF</string>
     <string name="titulo">80 da Edite</string>
+    <string name="title_activity_card_convidado">CardConvidado</string>
+    <string name="hint_pesquisa">Pesquisar convidado</string>
+    <string name="total">Total: </string>
 </resources>
