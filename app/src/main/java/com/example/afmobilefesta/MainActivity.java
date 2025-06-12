@@ -1,11 +1,14 @@
 package com.example.afmobilefesta;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,6 +19,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     EditText searchBar;
     List<Convidado> convidados = new ArrayList<>();
     ConvidadoAdapter adapter;
+    ImageButton btnAdd;
+
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +46,45 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        adapter = new ConvidadoAdapter(convidados);
+        db = FirebaseFirestore.getInstance();
+
+        adapter = new ConvidadoAdapter(convidados, this);
         containerConvidados = findViewById(R.id.container_convidados);
         containerConvidados.setAdapter(adapter);
         searchBar = findViewById(R.id.search_bar);
+        btnAdd = findViewById(R.id.btn_add);
+        btnAdd.setOnClickListener(l -> {
+            Intent intent = new Intent(MainActivity.this, FormConvidado.class);
+            startActivity(intent);
+        });
 
-        carregar
+
+        carregarConvidados();
+//        adapter.getConvidados(convidados, convidado -> {
+//            //TODO - enviar para activity de edição
+//        });
+//        adapter.notifyDataSetChanged();
     }
+
+    private void carregarConvidados(){
+        db.collection("convidado")
+                .get()
+                .addOnSuccessListener(query -> {
+                    Log.d("debugggg", "getConvidados");
+                    convidados.clear();
+                    for (QueryDocumentSnapshot doc : query) {
+                        Convidado c = doc.toObject(Convidado.class);
+                        c.setId(doc.getId());
+                        Log.d("debugggg", c.getNome());
+                        convidados.add(c);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+        adapter.setOnItemClickListener(convidado -> {
+            //TODO - enviar para activity de edição
+        });
+    }
+
 
     private LinearLayout buildCard(Convidado c){
         LinearLayout card = new LinearLayout(this);

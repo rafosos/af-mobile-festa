@@ -13,17 +13,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 public class ConvidadoAdapter extends RecyclerView.Adapter<ConvidadoAdapter.ViewHolder> {
+    private Context context;
     private List<Convidado> convidados;
     private  FirebaseFirestore db;
     private final String COLLECTION_NAME = "convidado";
-    public ConvidadoAdapter(List<Convidado> convidados){
+    public ConvidadoAdapter(List<Convidado> convidados, Context context){
         this.convidados = convidados;
         this.db = FirebaseFirestore.getInstance();
+        this.context = context;
     }
 
     public interface OnItemClickListener{
@@ -35,15 +38,33 @@ public class ConvidadoAdapter extends RecyclerView.Adapter<ConvidadoAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_2, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_convidado, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Convidado c = convidados.get(position);
-        holder.txt1.setText(c.getNome());
-        holder.txt2.setText(c.getConviteEnviado().toString());
+        holder.nome.setText(c.getNome());
+        holder.statusConvite.setText(c.getConviteEnviado() ? "enviado" : "não enviado");
+        EPresenca presenca = c.getPresenca();
+        holder.statusPresenca.setText(presenca.toString());
+
+
+        switch (presenca){
+            case Confirmado:
+                holder.statusPresenca.setTextColor(context.getResources().getColor(R.color.green, context.getTheme()));
+                break;
+            case Nao_respondido:
+                holder.statusPresenca.setTextColor(context.getResources().getColor(R.color.grey, context.getTheme()));
+                break;
+            case Negado:
+                holder.statusPresenca.setTextColor(context.getResources().getColor(R.color.red, context.getTheme()));
+                break;
+            case Talvez:
+                holder.statusPresenca.setTextColor(context.getResources().getColor(R.color.yellow, context.getTheme()));
+                break;
+        }
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null)
@@ -107,18 +128,36 @@ public class ConvidadoAdapter extends RecyclerView.Adapter<ConvidadoAdapter.View
         }
     }
 
+    public void getConvidados(List<Convidado> listaConvidados, OnItemClickListener listener){
+        db.collection(COLLECTION_NAME)
+            .get()
+            .addOnSuccessListener(query -> {
+                Log.d("debugggg", "getConvidados");
+                listaConvidados.clear();
+                for (QueryDocumentSnapshot doc : query) {
+                    Convidado c = doc.toObject(Convidado.class);
+                    c.setId(doc.getId());
+                    Log.d("debugggg", c.getNome());
+                    listaConvidados.add(c);
+                    this.notifyDataSetChanged();
+                }
+            });
+        setOnItemClickListener(listener);
+    }
+
     @Override
     public int getItemCount() {
         return convidados.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txt1, txt2;
+        TextView nome, statusConvite, statusPresenca;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            txt1 = itemView.findViewById(android.R.id.text1);
-            txt2 = itemView.findViewById(android.R.id.text2);
+            nome = itemView.findViewById(R.id.nome_convidado);
+            statusConvite = itemView.findViewById(R.id.status_convite);
+            statusPresenca = itemView.findViewById(R.id.status_presenca);
         }
     }
 }

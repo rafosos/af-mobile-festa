@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FormConvidado">
+
+    <ImageButton
+        android:id="@+id/btnVoltar"
+        android:layout_width="30sp"
+        android:layout_height="30sp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/azul_background"
+        app:tint="@color/white"
+        android:src="@drawable/arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnVoltar"
+        android:text="@string/titulo_form"
+        android:layout_width="wrap_content"
+        android:textAlignment="center"
+        android:fontFamily="@font/inter_28pt_extrabold"
+        android:id="@+id/titulo_form"
+        android:textSize="25sp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/label_nome"
+        app:layout_constraintTop_toBottomOf="@+id/titulo_form"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/label_nome"
+        android:layout_marginStart="10dp"
+        android:layout_width="wrap_content"
+        android:fontFamily="@font/inter_28pt_medium"
+        android:textSize="15sp"
+        android:layout_height="wrap_content"/>
+
+    <FrameLayout
+        android:background="@drawable/rounded_white_background"
+        app:layout_constraintTop_toBottomOf="@+id/label_nome"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="10dp"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:id="@+id/container_nome"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/input_nome"
+            android:hint="@string/label_nome"
+            android:layout_width="match_parent"
+            android:fontFamily="@font/inter_28pt_medium"
+            android:textSize="15sp"
+            android:textColorHint="@color/grey"
+            android:textColor="@color/black"
+            android:background="@android:color/transparent"
+            android:layout_height="wrap_content"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/container_convite"
+        app:layout_constraintTop_toBottomOf="@+id/container_nome"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <CheckBox
+            android:id="@+id/checkbox_convite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/label_convite"
+            app:layout_constraintTop_toBottomOf="@+id/titulo_form"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/label_convite"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:fontFamily="@font/inter_28pt_medium"
+            android:textSize="15sp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+
+    <Button
+        android:id="@+id/btn_salvar"
+        android:layout_marginVertical="10sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/container_convite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_btn_salvar"
+        android:backgroundTint="@color/green"
+        android:textSize="15sp"/>
+
+    <Button
+        android:id="@+id/btn_deletar"
+        android:layout_marginVertical="10sp"
+        app:layout_constraintTop_toBottomOf="@+id/btn_salvar"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_btn_deletar"
+        android:backgroundTint="@color/red"
+        android:textSize="15sp"/>
+
+    <Button
+        android:id="@+id/btn_cancelar"
+        android:layout_marginVertical="10sp"
+        app:layout_constraintTop_toBottomOf="@+id/btn_deletar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="@string/label_btn_cancelar"
+        android:backgroundTint="@color/grey"
+        android:textSize="15sp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
