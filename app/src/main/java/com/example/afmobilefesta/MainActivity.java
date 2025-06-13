@@ -2,21 +2,16 @@ package com.example.afmobilefesta;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -51,19 +46,16 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ConvidadoAdapter(convidados, this);
         containerConvidados = findViewById(R.id.container_convidados);
         containerConvidados.setAdapter(adapter);
-        searchBar = findViewById(R.id.search_bar);
-        btnAdd = findViewById(R.id.btn_add);
-        btnAdd.setOnClickListener(l -> {
-            Intent intent = new Intent(MainActivity.this, FormConvidado.class);
-            startActivity(intent);
-        });
+        containerConvidados.setLayoutManager(new LinearLayoutManager(this));
+//        searchBar = findViewById(R.id.search_bar);
+//        btnAdd = findViewById(R.id.btn_add);
+//        btnAdd.setOnClickListener(l -> {
+//            Intent intent = new Intent(MainActivity.this, FormConvidado.class);
+//            startActivity(intent);
+//        });
 
 
         carregarConvidados();
-//        adapter.getConvidados(convidados, convidado -> {
-//            //TODO - enviar para activity de edição
-//        });
-//        adapter.notifyDataSetChanged();
     }
 
     private void carregarConvidados(){
@@ -77,29 +69,32 @@ public class MainActivity extends AppCompatActivity {
                         c.setId(doc.getId());
                         Log.d("debugggg", c.getNome());
                         convidados.add(c);
-                        adapter.notifyDataSetChanged();
                     }
+                    adapter.notifyDataSetChanged();
                 });
         adapter.setOnItemClickListener(convidado -> {
-            //TODO - enviar para activity de edição
+            Intent intent = new Intent(this, FormConvidado.class);
+            intent.putExtra("id_convidado", convidado.getId());
+            intent.putExtra("nome_convidado", convidado.getNome());
+            intent.putExtra("convite_convidado", convidado.getConvite());
+            intent.putExtra("presenca_convidado", convidado.getPresenca());
+            startActivity(intent);
         });
     }
 
 
-    private LinearLayout buildCard(Convidado c){
-        LinearLayout card = new LinearLayout(this);
-        card.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, //width
-                ViewGroup.LayoutParams.WRAP_CONTENT //height
-        ));
-        card.setOrientation(LinearLayout.VERTICAL);
-
-        TextView nome = new TextView(this);
-        nome.setText(c.getNome());
-        nome.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35);
-
-        return card;
-    }
-
-
+//    private LinearLayout buildCard(Convidado c){
+//        LinearLayout card = new LinearLayout(this);
+//        card.setLayoutParams(new LinearLayout.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT, //width
+//                ViewGroup.LayoutParams.WRAP_CONTENT //height
+//        ));
+//        card.setOrientation(LinearLayout.VERTICAL);
+//
+//        TextView nome = new TextView(this);
+//        nome.setText(c.getNome());
+//        nome.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35);
+//
+//        return card;
+//    }
 }

@@ -103,6 +103,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/container_convidados"
                 android:layout_width="match_parent"
+                android:orientation="vertical"
                 android:layout_height="200dp"/>
 
         </LinearLayout>

@@ -1,16 +1,21 @@
 package com.example.afmobilefesta;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FormConvidado extends AppCompatActivity {
     ImageButton btnVoltar;
@@ -19,6 +24,10 @@ public class FormConvidado extends AppCompatActivity {
     Button btnCancelar;
     CheckBox checkConvite;
     EditText inputNome;
+    ConvidadoAdapter adapter;
+    List<Convidado> convidados = new ArrayList<>();
+    Convidado convidado;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +39,15 @@ public class FormConvidado extends AppCompatActivity {
             return insets;
         });
 
+        Intent intent = getIntent();
+        convidado = new Convidado();
+        convidado.setId(intent.getStringExtra("id_convidado"));
+        convidado.setNome(intent.getStringExtra("nome_convidado"));
+        convidado.setConvite(intent.getBooleanExtra("convite_convidado", false));
+        convidado.setPresenca((EPresenca) intent.getSerializableExtra("presenca_convidado"));
+
+        adapter = new ConvidadoAdapter(convidados,this);
+
         btnSalvar = findViewById(R.id.btn_salvar);
         btnDeletar = findViewById(R.id.btn_deletar);
         btnCancelar = findViewById(R.id.btn_cancelar);
@@ -40,20 +58,35 @@ public class FormConvidado extends AppCompatActivity {
         btnCancelar.setOnClickListener(l -> {clearAndFinish();});
         btnSalvar.setOnClickListener(l -> {salvar();});
         btnDeletar.setOnClickListener(l -> {deletar();});
+
+        populateFields();
     }
 
-    private void clearAndFinish(){
+    private void populateFields(){
+        inputNome.setText(convidado.getNome());
+        checkConvite.setChecked(convidado.getConvite());
+    }
+
+    private void readFields(){
+        convidado.setNome(inputNome.getText().toString());
+        convidado.setConvite(checkConvite.isChecked());
+    }
+
+    private Integer clearAndFinish(){
         inputNome.setText("");
         checkConvite.setChecked(false);
         finish();
+        return 0; //gambiarra
     }
 
     private void salvar(){
-
-        clearAndFinish();
+        readFields();
+        adapter.salvarConvidado(convidado, this, this::clearAndFinish);
     }
 
-    private void deletar(){
+    private void deletar() {
+        adapter.deletarConvidado(convidado.getId(), 0);
+        Toast.makeText(this, "Convidado deletado!", Toast.LENGTH_SHORT).show();
         clearAndFinish();
     }
 }

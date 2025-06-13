@@ -46,7 +46,7 @@ public class ConvidadoAdapter extends RecyclerView.Adapter<ConvidadoAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Convidado c = convidados.get(position);
         holder.nome.setText(c.getNome());
-        holder.statusConvite.setText(c.getConviteEnviado() ? "enviado" : "não enviado");
+        holder.statusConvite.setText(c.getConvite() ? "enviado" : "não enviado");
         EPresenca presenca = c.getPresenca();
         holder.statusPresenca.setText(presenca.toString());
 
@@ -78,7 +78,7 @@ public class ConvidadoAdapter extends RecyclerView.Adapter<ConvidadoAdapter.View
                 if (event.getAction() == MotionEvent.ACTION_DOWN){
                     long currentTime = System.currentTimeMillis();
                     if(currentTime - lastClickTime < 300){
-                        deletarConvidado(c.getId(), holder.getAdapterPosition(), v);
+                        deletarConvidado(c.getId(), holder.getAdapterPosition());
                     }
                     lastClickTime = currentTime;
                 }
@@ -87,18 +87,17 @@ public class ConvidadoAdapter extends RecyclerView.Adapter<ConvidadoAdapter.View
         });
     }
 
-    private void deletarConvidado(String idDocumento, int position, View view){
+    public void deletarConvidado(String idDocumento, int position){
         this.db.collection(COLLECTION_NAME)
                 .document(idDocumento)
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     convidados.remove(position);
                     notifyItemRemoved(position);
-                    Toast.makeText(view.getContext(), "Convidado deletado!", Toast.LENGTH_SHORT).show();
                 });
     }
 
-    public void salvarConvidado(Convidado c, Context context, Callable onSuccess){
+    public void salvarConvidado(Convidado c, Context context, Callable<Integer> onSuccess){
         String convidadoId = c.getId();
         if(convidadoId == null || convidadoId.isBlank()){
             this.db.collection(COLLECTION_NAME)
