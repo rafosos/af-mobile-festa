@@ -4,6 +4,7 @@
     <string name="title_activity_card_convidado">CardConvidado</string>
     <string name="hint_pesquisa">Pesquisar convidado</string>
     <string name="total">Total: </string>
+    <string name="placeholder_convidado">Convidado</string>
     <string name="convite">Convite:&#032;</string>
     <string name="presenca">Presença:&#032;</string>
     <string name="titulo_form">Convidado</string>
@@ -13,4 +14,5 @@
     <string name="label_btn_salvar">SALVAR</string>
     <string name="label_btn_deletar">DELETAR</string>
     <string name="label_btn_cancelar">CANCELAR</string>
+
 </resources>

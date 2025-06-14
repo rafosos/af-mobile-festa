@@ -4,5 +4,5 @@ public enum EPresenca {
     Confirmado,
     Nao_respondido,
     Negado,
-    Talvez
+    Talvez;
 }

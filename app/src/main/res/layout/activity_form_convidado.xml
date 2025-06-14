@@ -87,13 +87,29 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-
+    <FrameLayout
+        android:background="@drawable/rounded_white_background"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="10dp"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:id="@+id/container_dropdown"
+        app:layout_constraintTop_toBottomOf="@+id/container_convite"
+        android:layout_height="wrap_content">
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:popupBackground="@color/white"
+            android:spinnerMode="dropdown"
+            android:id="@+id/dropdown"/>
+    </FrameLayout>
 
     <Button
         android:id="@+id/btn_salvar"
         android:layout_marginVertical="10sp"
         android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/container_convite"
+        app:layout_constraintTop_toBottomOf="@+id/container_dropdown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/label_btn_salvar"

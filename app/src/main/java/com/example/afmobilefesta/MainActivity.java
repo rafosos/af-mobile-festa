@@ -2,12 +2,18 @@ package com.example.afmobilefesta;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -19,15 +25,18 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView containerConvidados;
     EditText searchBar;
+    LinearLayout containerStats;
     List<Convidado> convidados = new ArrayList<>();
+    List<Convidado> convidadosFiltrados = new ArrayList<>();
     ConvidadoAdapter adapter;
     ImageButton btnAdd;
-
+    TextView total;
     FirebaseFirestore db;
 
     @Override
@@ -43,33 +52,58 @@ public class MainActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        adapter = new ConvidadoAdapter(convidados, this);
+        adapter = new ConvidadoAdapter(convidadosFiltrados, this);
         containerConvidados = findViewById(R.id.container_convidados);
+        total = findViewById(R.id.total);
         containerConvidados.setAdapter(adapter);
         containerConvidados.setLayoutManager(new LinearLayoutManager(this));
-//        searchBar = findViewById(R.id.search_bar);
-//        btnAdd = findViewById(R.id.btn_add);
-//        btnAdd.setOnClickListener(l -> {
-//            Intent intent = new Intent(MainActivity.this, FormConvidado.class);
-//            startActivity(intent);
-//        });
+        containerStats = findViewById(R.id.container_stats);
+        containerStats.setOrientation(LinearLayout.HORIZONTAL);
+        populateStats();
+        searchBar = findViewById(R.id.search_bar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                Log.d("debugggg", s.toString());
+                convidadosFiltrados.clear();
+                convidadosFiltrados.addAll(convidados.stream().filter(c -> c.getNome().contains(s.toString())).collect(Collectors.toList()));
+                updateTotal();
+                adapter.notifyDataSetChanged();
+            }
+        });
 
+        btnAdd = findViewById(R.id.btn_add);
+        btnAdd.setOnClickListener(l -> {
+            Intent intent = new Intent(MainActivity.this, FormConvidado.class);
+            startActivity(intent);
+        });
 
         carregarConvidados();
     }
 
-    private void carregarConvidados(){
+    @Override
+    protected void onResume() {
+        super.onResume();
+        carregarConvidados();
+    }
+
+    private void carregarConvidados() {
         db.collection("convidado")
                 .get()
                 .addOnSuccessListener(query -> {
                     Log.d("debugggg", "getConvidados");
                     convidados.clear();
+                    convidadosFiltrados.clear();
+                    searchBar.setText("");
                     for (QueryDocumentSnapshot doc : query) {
                         Convidado c = doc.toObject(Convidado.class);
                         c.setId(doc.getId());
                         Log.d("debugggg", c.getNome());
+                        convidadosFiltrados.add(c);
                         convidados.add(c);
                     }
+                    updateTotal();
                     adapter.notifyDataSetChanged();
                 });
         adapter.setOnItemClickListener(convidado -> {
@@ -82,19 +116,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void updateTotal(){
+        this.total.setText("Total: " + convidadosFiltrados.stream().count());
+    }
 
-//    private LinearLayout buildCard(Convidado c){
-//        LinearLayout card = new LinearLayout(this);
-//        card.setLayoutParams(new LinearLayout.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT, //width
-//                ViewGroup.LayoutParams.WRAP_CONTENT //height
-//        ));
-//        card.setOrientation(LinearLayout.VERTICAL);
-//
-//        TextView nome = new TextView(this);
-//        nome.setText(c.getNome());
-//        nome.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35);
-//
-//        return card;
-//    }
+    private void populateStats(){
+        for (EPresenca s : EPresenca.values()) {
+            FrameLayout container = new FrameLayout(this);
+            container.setBackground(AppCompatResources.getDrawable(this, R.drawable.white_border_blue_background));
+            container.setLayoutParams(new FrameLayout.LayoutParams(.));
+            this.containerStats.addView(container);
+        };
+    }
 }
