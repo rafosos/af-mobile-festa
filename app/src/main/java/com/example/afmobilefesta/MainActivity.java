@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     ImageButton btnAdd;
     TextView total;
     FirebaseFirestore db;
+    EPresenca filtroAtivo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         containerConvidados.setLayoutManager(new LinearLayoutManager(this));
         containerStats = findViewById(R.id.container_stats);
         containerStats.setOrientation(LinearLayout.HORIZONTAL);
-        populateStats();
         searchBar = findViewById(R.id.search_bar);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         carregarConvidados();
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -102,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("debugggg", c.getNome());
                         convidadosFiltrados.add(c);
                         convidados.add(c);
+                        populateStats();
                     }
                     updateTotal();
                     adapter.notifyDataSetChanged();
@@ -121,10 +125,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateStats(){
+        this.containerStats.removeAllViews();
+
         for (EPresenca s : EPresenca.values()) {
-            FrameLayout container = new FrameLayout(this);
+            LinearLayout container = new LinearLayout(this);
+            container.setOnClickListener(l -> {
+                if(filtroAtivo == s){
+                    l.setBackground(AppCompatResources.getDrawable(this, R.drawable.white_border_blue_background));
+                    filtroAtivo = null;
+                    convidadosFiltrados.clear();
+                    convidadosFiltrados.addAll(convidados);
+                }else {
+                    l.setBackground(AppCompatResources.getDrawable(this, R.drawable.yellow_border_blue_background));
+                    filtroAtivo = s;
+                    convidadosFiltrados.clear();
+                    convidadosFiltrados.addAll(convidados.stream().filter(c -> c.getPresenca() == s).collect(Collectors.toList()));
+                }
+                adapter.notifyDataSetChanged();
+                updateTotal();
+            });
             container.setBackground(AppCompatResources.getDrawable(this, R.drawable.white_border_blue_background));
-            container.setLayoutParams(new FrameLayout.LayoutParams(.));
+            ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    1.0f);
+            container.setLayoutParams(params);
+            container.setPadding(5,5,5,5);
+            container.setOrientation(LinearLayout.VERTICAL);
+
+            TextView title = new TextView(this);
+            title.setText(s.toString());
+            title.setTextColor(getResources().getColor(R.color.white, this.getTheme()));
+            title.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
+            container.addView(title);
+
+            TextView count = new TextView(this);
+            count.setText(String.valueOf(convidadosFiltrados.stream().filter(c -> c.getPresenca() == s).count()));
+            count.setTextColor(getResources().getColor(R.color.white, this.getTheme()));
+            count.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
+            container.addView(count);
             this.containerStats.addView(container);
         };
     }
